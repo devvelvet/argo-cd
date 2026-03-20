@@ -94,11 +94,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({title, value, subtitle, color,
 const AppRow: React.FC<{app: AppSREOverview}> = ({app}) => (
     <tr className='sre-table__row'>
         <td className='sre-table__cell sre-table__cell--name'>
-            <StatusDot
-                status={
-                    app.healthScore >= 90 ? 'Healthy' : app.healthScore >= 70 ? 'Warning' : 'Failed'
-                }
-            />
+            <StatusDot status={app.healthScore >= 90 ? 'Healthy' : app.healthScore >= 70 ? 'Warning' : 'Failed'} />
             <span>{app.name}</span>
         </td>
         <td className='sre-table__cell sre-table__cell--center'>
@@ -110,9 +106,7 @@ const AppRow: React.FC<{app: AppSREOverview}> = ({app}) => (
             </span>
         </td>
         <td className='sre-table__cell'>
-            <span className={`sre-phase-badge sre-phase-badge--${app.deploymentPhase.toLowerCase()}`}>
-                {app.deploymentPhase}
-            </span>
+            <span className={`sre-phase-badge sre-phase-badge--${app.deploymentPhase.toLowerCase()}`}>{app.deploymentPhase}</span>
         </td>
         <td className='sre-table__cell sre-table__cell--center'>
             {app.canaryWeight > 0 ? (
@@ -129,16 +123,10 @@ const AppRow: React.FC<{app: AppSREOverview}> = ({app}) => (
             <span className='sre-text-sm'>{app.circuitBreakerState}</span>
         </td>
         <td className='sre-table__cell sre-table__cell--center'>
-            <span className={`sre-slo-badge ${app.sloCompliance ? 'sre-slo-badge--pass' : 'sre-slo-badge--fail'}`}>
-                {app.sloCompliance ? 'PASS' : 'FAIL'}
-            </span>
+            <span className={`sre-slo-badge ${app.sloCompliance ? 'sre-slo-badge--pass' : 'sre-slo-badge--fail'}`}>{app.sloCompliance ? 'PASS' : 'FAIL'}</span>
         </td>
         <td className='sre-table__cell sre-table__cell--center'>
-            {app.activeIncidents > 0 ? (
-                <span className='sre-incident-count'>{app.activeIncidents}</span>
-            ) : (
-                <span className='sre-text-muted'>0</span>
-            )}
+            {app.activeIncidents > 0 ? <span className='sre-incident-count'>{app.activeIncidents}</span> : <span className='sre-text-muted'>0</span>}
         </td>
         <td className='sre-table__cell sre-table__cell--scores'>
             <span className='sre-mini-score sre-mini-score--avail'>{app.availability}</span>

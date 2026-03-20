@@ -52,13 +52,7 @@ const DeploymentStrategyConfig: React.FC<{
     readOnly: boolean;
 }> = ({strategy, onChange, readOnly}) => {
     const strategyType = strategy?.type || 'Canary';
-    const steps = strategy?.canarySteps || [
-        {weight: 10},
-        {weight: 30},
-        {weight: 50},
-        {weight: 80},
-        {weight: 100}
-    ];
+    const steps = strategy?.canarySteps || [{weight: 10}, {weight: 30}, {weight: 50}, {weight: 80}, {weight: 100}];
 
     return (
         <div className='sre-config-section'>
@@ -66,11 +60,7 @@ const DeploymentStrategyConfig: React.FC<{
 
             <div className='sre-config-field'>
                 <label className='sre-config-field__label'>Strategy Type</label>
-                <select
-                    className='sre-config-field__select'
-                    value={strategyType}
-                    disabled={readOnly}
-                    onChange={e => onChange({...strategy, type: e.target.value})}>
+                <select className='sre-config-field__select' value={strategyType} disabled={readOnly} onChange={e => onChange({...strategy, type: e.target.value})}>
                     <option value='Canary'>Canary (Default)</option>
                     <option value='BlueGreen'>Blue-Green</option>
                     <option value='Rolling'>Rolling Update</option>
@@ -161,12 +151,7 @@ const CircuitBreakerConfig: React.FC<{
         <h3 className='sre-config-section__title'>
             Circuit Breaker
             <label className='sre-config-toggle sre-config-toggle--header'>
-                <input
-                    type='checkbox'
-                    checked={config?.enabled || false}
-                    disabled={readOnly}
-                    onChange={e => onChange({...config, enabled: e.target.checked})}
-                />
+                <input type='checkbox' checked={config?.enabled || false} disabled={readOnly} onChange={e => onChange({...config, enabled: e.target.checked})} />
                 <span className='sre-config-toggle__slider' />
             </label>
         </h3>
@@ -224,12 +209,7 @@ const RateLimitingConfig: React.FC<{
         <h3 className='sre-config-section__title'>
             Rate Limiting
             <label className='sre-config-toggle sre-config-toggle--header'>
-                <input
-                    type='checkbox'
-                    checked={config?.enabled || false}
-                    disabled={readOnly}
-                    onChange={e => onChange({...config, enabled: e.target.checked})}
-                />
+                <input type='checkbox' checked={config?.enabled || false} disabled={readOnly} onChange={e => onChange({...config, enabled: e.target.checked})} />
                 <span className='sre-config-toggle__slider' />
             </label>
         </h3>
@@ -276,12 +256,7 @@ const IncidentPolicyConfig: React.FC<{
         <h3 className='sre-config-section__title'>
             Incident Management
             <label className='sre-config-toggle sre-config-toggle--header'>
-                <input
-                    type='checkbox'
-                    checked={config?.enabled || false}
-                    disabled={readOnly}
-                    onChange={e => onChange({...config, enabled: e.target.checked})}
-                />
+                <input type='checkbox' checked={config?.enabled || false} disabled={readOnly} onChange={e => onChange({...config, enabled: e.target.checked})} />
                 <span className='sre-config-toggle__slider' />
             </label>
         </h3>
@@ -290,12 +265,7 @@ const IncidentPolicyConfig: React.FC<{
             <div className='sre-config-grid'>
                 <div className='sre-config-field sre-config-field--inline'>
                     <label className='sre-config-toggle'>
-                        <input
-                            type='checkbox'
-                            checked={config.autoCreate || false}
-                            disabled={readOnly}
-                            onChange={e => onChange({...config, autoCreate: e.target.checked})}
-                        />
+                        <input type='checkbox' checked={config.autoCreate || false} disabled={readOnly} onChange={e => onChange({...config, autoCreate: e.target.checked})} />
                         <span className='sre-config-toggle__slider' />
                         <span className='sre-config-toggle__label'>Auto-create incidents</span>
                     </label>
@@ -330,11 +300,7 @@ export const ApplicationSREConfigPanel: React.FC<SREConfigPanelProps> = ({config
                 <span className='sre-config__subtitle'>Configure deployment strategy, reliability controls, and incident management</span>
             </div>
 
-            <DeploymentStrategyConfig
-                strategy={config.deploymentStrategy}
-                onChange={deploymentStrategy => onChange({...config, deploymentStrategy})}
-                readOnly={readOnly}
-            />
+            <DeploymentStrategyConfig strategy={config.deploymentStrategy} onChange={deploymentStrategy => onChange({...config, deploymentStrategy})} readOnly={readOnly} />
 
             <CircuitBreakerConfig config={config.circuitBreaker} onChange={circuitBreaker => onChange({...config, circuitBreaker})} readOnly={readOnly} />
 

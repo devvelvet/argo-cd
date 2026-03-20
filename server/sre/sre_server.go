@@ -372,9 +372,13 @@ func (s *Server) handleDashboard(w http.ResponseWriter, r *http.Request) {
 }
 
 func writeJSON(w http.ResponseWriter, v interface{}) {
-	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(v); err != nil {
+	data, err := json.Marshal(v)
+	if err != nil {
 		log.WithError(err).Error("Failed to encode JSON response")
 		http.Error(w, fmt.Sprintf("Internal server error: %v", err), http.StatusInternalServerError)
+		return
 	}
+	w.Header().Set("Content-Type", "application/json")
+	_, _ = w.Write(data)
+	_, _ = w.Write([]byte("\n"))
 }

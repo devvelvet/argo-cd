@@ -55,10 +55,11 @@ func (c *CircuitBreakerController) Register(appName string, config *sretypes.Cir
 	log.WithField("app", appName).Info("Circuit breaker registered")
 }
 
-// CanSync checks if a sync operation is allowed by the circuit breaker
+// CanSync checks if a sync operation is allowed by the circuit breaker.
+// When the breaker is Open and the timeout has elapsed, it transitions to HalfOpen.
 func (c *CircuitBreakerController) CanSync(appName string) (bool, string) {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
+	c.mu.Lock()
+	defer c.mu.Unlock()
 
 	instance, ok := c.breakers[appName]
 	if !ok {
@@ -71,7 +72,8 @@ func (c *CircuitBreakerController) CanSync(appName string) (bool, string) {
 		if instance.Config.Timeout != nil && instance.Status.LastStateChange != nil {
 			elapsed := time.Since(instance.Status.LastStateChange.Time)
 			if elapsed >= instance.Config.Timeout.Duration {
-				// Transition to half-open (done in RecordResult)
+				// Transition to half-open before allowing the request
+				c.transitionState(appName, instance, sretypes.CircuitBreakerHalfOpen)
 				return true, "Circuit breaker transitioning to half-open"
 			}
 		}

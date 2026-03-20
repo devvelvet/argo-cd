@@ -90,14 +90,7 @@ const HealthScoreRing: React.FC<{score: number; label: string; size?: number; co
     return (
         <div className='sre-health-ring'>
             <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-                <circle
-                    cx={size / 2}
-                    cy={size / 2}
-                    r={radius}
-                    fill='none'
-                    stroke='#2a2e3a'
-                    strokeWidth='6'
-                />
+                <circle cx={size / 2} cy={size / 2} r={radius} fill='none' stroke='#2a2e3a' strokeWidth='6' />
                 <circle
                     cx={size / 2}
                     cy={size / 2}
@@ -221,9 +214,7 @@ const SLOCard: React.FC<{slo: SLOData}> = ({slo}) => {
         <div className={`sre-slo-card ${slo.compliance ? 'sre-slo-card--compliant' : 'sre-slo-card--violation'}`}>
             <div className='sre-slo-card__header'>
                 <span className='sre-slo-card__name'>{slo.name}</span>
-                <span className={`sre-slo-card__badge ${slo.compliance ? 'sre-slo-card__badge--pass' : 'sre-slo-card__badge--fail'}`}>
-                    {slo.compliance ? 'PASS' : 'FAIL'}
-                </span>
+                <span className={`sre-slo-card__badge ${slo.compliance ? 'sre-slo-card__badge--pass' : 'sre-slo-card__badge--fail'}`}>{slo.compliance ? 'PASS' : 'FAIL'}</span>
             </div>
             <div className='sre-slo-card__metrics'>
                 <div className='sre-slo-card__metric'>
@@ -430,12 +421,7 @@ export const ApplicationSREDashboard: React.FC<SREDashboardProps> = ({appName, s
             {/* Canary Deployment Section */}
             <div className='sre-dashboard__section'>
                 <h3 className='sre-dashboard__section-title'>Deployment Strategy (Canary)</h3>
-                <CanaryProgressBar
-                    weight={canaryData.canaryWeight}
-                    currentStep={canaryData.currentStep}
-                    totalSteps={canaryData.totalSteps}
-                    phase={canaryData.phase}
-                />
+                <CanaryProgressBar weight={canaryData.canaryWeight} currentStep={canaryData.currentStep} totalSteps={canaryData.totalSteps} phase={canaryData.phase} />
                 <div className='sre-canary__message'>{canaryData.message}</div>
             </div>
 
@@ -453,7 +439,9 @@ export const ApplicationSREDashboard: React.FC<SREDashboardProps> = ({appName, s
                             <span className='sre-stats__label'>Active Incidents</span>
                         </div>
                         <div className='sre-stats__item'>
-                            <span className='sre-stats__value'>{slos.filter(s => s.compliance).length}/{slos.length}</span>
+                            <span className='sre-stats__value'>
+                                {slos.filter(s => s.compliance).length}/{slos.length}
+                            </span>
                             <span className='sre-stats__label'>SLOs Passing</span>
                         </div>
                     </div>

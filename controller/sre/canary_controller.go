@@ -139,7 +139,10 @@ func (c *CanaryController) processStep(appName string) (*sretypes.DeploymentStat
 
 // handlePause handles a pause step
 func (c *CanaryController) handlePause(appName string, pause *sretypes.CanaryPause) (*sretypes.DeploymentStatus, error) {
-	state := c.deployments[appName]
+	state, ok := c.deployments[appName]
+	if !ok {
+		return nil, fmt.Errorf("no canary deployment found for app: %s", appName)
+	}
 	now := time.Now()
 	state.PauseStarted = &now
 	state.Status.Phase = sretypes.DeploymentPhasePaused
@@ -161,7 +164,10 @@ func (c *CanaryController) handlePause(appName string, pause *sretypes.CanaryPau
 
 // handleAnalysis handles an analysis step
 func (c *CanaryController) handleAnalysis(appName string, analysis *sretypes.CanaryStepAnalysis) (*sretypes.DeploymentStatus, error) {
-	state := c.deployments[appName]
+	state, ok := c.deployments[appName]
+	if !ok {
+		return nil, fmt.Errorf("no canary deployment found for app: %s", appName)
+	}
 	state.Status.Message = fmt.Sprintf("Running analysis at %d%% canary weight", state.Status.CanaryWeight)
 
 	log.WithFields(log.Fields{
@@ -199,7 +205,10 @@ func (c *CanaryController) PromoteCanaryStep(appName string) (*sretypes.Deployme
 
 // promoteCanary completes the canary deployment by fully promoting
 func (c *CanaryController) promoteCanary(appName string) (*sretypes.DeploymentStatus, error) {
-	state := c.deployments[appName]
+	state, ok := c.deployments[appName]
+	if !ok {
+		return nil, fmt.Errorf("no canary deployment found for app: %s", appName)
+	}
 	now := metav1.Now()
 
 	state.Status.Phase = sretypes.DeploymentPhaseCompleted
@@ -264,6 +273,12 @@ func (c *CanaryController) CheckPauseExpiration(ctx context.Context) {
 	defer c.mu.Unlock()
 
 	for appName, state := range c.deployments {
+		select {
+		case <-ctx.Done():
+			return
+		default:
+		}
+
 		if state.Status.Phase != sretypes.DeploymentPhasePaused || state.PauseStarted == nil {
 			continue
 		}
