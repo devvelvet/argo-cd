@@ -1,0 +1,645 @@
+// SRE Dashboard Styles
+// ============================================================================
+
+$color-bg-primary: #1a1d29;
+$color-bg-secondary: #222635;
+$color-bg-card: #2a2e3a;
+$color-bg-hover: #323748;
+$color-text-primary: #e8eaf0;
+$color-text-secondary: #9ba0b0;
+$color-text-muted: #6b7085;
+$color-border: #3a3f50;
+$color-success: #18be94;
+$color-warning: #f5a623;
+$color-danger: #e5344a;
+$color-info: #4fc3f7;
+$color-purple: #ba68c8;
+$color-canary-fill: #18be94;
+$color-canary-bg: #2a2e3a;
+
+// ============================================================================
+// Dashboard Layout
+// ============================================================================
+
+.sre-dashboard {
+    padding: 20px;
+    background: $color-bg-primary;
+    min-height: 100%;
+    color: $color-text-primary;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid $color-border;
+    }
+
+    &__title {
+        font-size: 22px;
+        font-weight: 600;
+        margin: 0;
+        color: $color-text-primary;
+    }
+
+    &__header-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    &__section {
+        background: $color-bg-secondary;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid $color-border;
+
+        &--grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+    }
+
+    &__subsection {
+        background: $color-bg-card;
+        border-radius: 8px;
+        padding: 16px;
+    }
+
+    &__section-title {
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: $color-text-secondary;
+        margin: 0 0 16px 0;
+    }
+
+    &__health-scores {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+    }
+
+    &__health-details {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    &__slo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 16px;
+    }
+}
+
+// ============================================================================
+// Health Score Ring
+// ============================================================================
+
+.sre-health-ring {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &__score {
+        font-size: 20px;
+        font-weight: 700;
+        fill: $color-text-primary;
+    }
+
+    &__label {
+        font-size: 10px;
+        fill: $color-text-secondary;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+}
+
+// ============================================================================
+// Canary Deployment
+// ============================================================================
+
+.sre-canary {
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    &__title {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    &__phase {
+        padding: 4px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+
+        &--completed {
+            background: rgba($color-success, 0.15);
+            color: $color-success;
+        }
+
+        &--failed {
+            background: rgba($color-danger, 0.15);
+            color: $color-danger;
+        }
+
+        &--paused {
+            background: rgba($color-warning, 0.15);
+            color: $color-warning;
+        }
+
+        &--progressing {
+            background: rgba($color-info, 0.15);
+            color: $color-info;
+        }
+
+        &--pending {
+            background: rgba($color-text-muted, 0.15);
+            color: $color-text-muted;
+        }
+    }
+
+    &__progress-container {
+        margin-bottom: 20px;
+    }
+
+    &__progress-bar {
+        position: relative;
+        height: 32px;
+        background: $color-canary-bg;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid $color-border;
+    }
+
+    &__progress-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        background: linear-gradient(90deg, $color-canary-fill 0%, darken($color-canary-fill, 10%) 100%);
+        border-radius: 16px;
+        transition: width 0.5s ease-in-out;
+        min-width: 2px;
+    }
+
+    &__progress-label {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 13px;
+        font-weight: 600;
+        color: $color-text-primary;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        z-index: 1;
+    }
+
+    &__steps {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 4px;
+    }
+
+    &__step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+
+        &--completed {
+            .sre-canary__step-dot {
+                background: $color-success;
+                border-color: $color-success;
+            }
+        }
+
+        &--active {
+            .sre-canary__step-dot {
+                background: $color-info;
+                border-color: $color-info;
+                box-shadow: 0 0 8px rgba($color-info, 0.5);
+            }
+        }
+    }
+
+    &__step-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: $color-bg-card;
+        border: 2px solid $color-border;
+        transition: all 0.3s ease;
+    }
+
+    &__step-label {
+        font-size: 10px;
+        color: $color-text-muted;
+    }
+
+    &__message {
+        margin-top: 12px;
+        padding: 10px 14px;
+        background: $color-bg-card;
+        border-radius: 8px;
+        font-size: 13px;
+        color: $color-text-secondary;
+        border-left: 3px solid $color-info;
+    }
+}
+
+// ============================================================================
+// Circuit Breaker
+// ============================================================================
+
+.sre-cb {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-radius: 8px;
+    background: $color-bg-primary;
+    border: 1px solid $color-border;
+
+    &--closed {
+        border-left: 4px solid $color-success;
+
+        .sre-cb__icon {
+            color: $color-success;
+            background: rgba($color-success, 0.1);
+        }
+    }
+
+    &--open {
+        border-left: 4px solid $color-danger;
+
+        .sre-cb__icon {
+            color: $color-danger;
+            background: rgba($color-danger, 0.1);
+        }
+    }
+
+    &--half-open {
+        border-left: 4px solid $color-warning;
+
+        .sre-cb__icon {
+            color: $color-warning;
+            background: rgba($color-warning, 0.1);
+        }
+    }
+
+    &__icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    &__info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    &__state {
+        font-size: 16px;
+        font-weight: 600;
+        color: $color-text-primary;
+    }
+
+    &__detail {
+        font-size: 12px;
+        color: $color-text-muted;
+    }
+}
+
+// ============================================================================
+// SLO Card
+// ============================================================================
+
+.sre-slo-card {
+    background: $color-bg-card;
+    border-radius: 10px;
+    padding: 16px;
+    border: 1px solid $color-border;
+    transition: all 0.2s ease;
+
+    &:hover {
+        border-color: $color-text-muted;
+        transform: translateY(-1px);
+    }
+
+    &--violation {
+        border-left: 4px solid $color-danger;
+    }
+
+    &--compliant {
+        border-left: 4px solid $color-success;
+    }
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    &__name {
+        font-size: 15px;
+        font-weight: 600;
+        color: $color-text-primary;
+    }
+
+    &__badge {
+        padding: 2px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+
+        &--pass {
+            background: rgba($color-success, 0.15);
+            color: $color-success;
+        }
+
+        &--fail {
+            background: rgba($color-danger, 0.15);
+            color: $color-danger;
+        }
+    }
+
+    &__metrics {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    &__metric {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+    }
+
+    &__metric-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        color: $color-text-muted;
+        letter-spacing: 0.5px;
+    }
+
+    &__metric-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: $color-text-primary;
+    }
+
+    &__budget {
+        margin-top: 8px;
+    }
+
+    &__budget-label {
+        font-size: 11px;
+        color: $color-text-secondary;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    &__budget-bar {
+        height: 6px;
+        background: $color-bg-primary;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+    &__budget-fill {
+        height: 100%;
+        background: $color-success;
+        border-radius: 3px;
+        transition: width 0.5s ease;
+
+        &--warning {
+            background: $color-warning;
+        }
+
+        &--critical {
+            background: $color-danger;
+        }
+    }
+}
+
+// ============================================================================
+// Stats
+// ============================================================================
+
+.sre-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+
+    &__item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 12px;
+        background: $color-bg-primary;
+        border-radius: 8px;
+        border: 1px solid $color-border;
+    }
+
+    &__value {
+        font-size: 24px;
+        font-weight: 700;
+        color: $color-text-primary;
+    }
+
+    &__label {
+        font-size: 11px;
+        color: $color-text-muted;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+}
+
+// ============================================================================
+// Incidents
+// ============================================================================
+
+.sre-incidents-empty {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    background: $color-bg-card;
+    border-radius: 8px;
+    color: $color-success;
+    font-size: 14px;
+
+    &__icon {
+        font-size: 24px;
+    }
+}
+
+.sre-incidents {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sre-incident {
+    padding: 14px 16px;
+    background: $color-bg-card;
+    border-radius: 8px;
+    border: 1px solid $color-border;
+    border-left: 4px solid $color-text-muted;
+
+    &--critical {
+        border-left-color: $color-danger;
+    }
+
+    &--high {
+        border-left-color: #ff6b35;
+    }
+
+    &--medium {
+        border-left-color: $color-warning;
+    }
+
+    &--low {
+        border-left-color: $color-info;
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 6px;
+    }
+
+    &__id {
+        font-size: 13px;
+        font-weight: 600;
+        color: $color-text-primary;
+        font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+    }
+
+    &__severity {
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+
+        &--critical {
+            background: rgba($color-danger, 0.15);
+            color: $color-danger;
+        }
+
+        &--high {
+            background: rgba(#ff6b35, 0.15);
+            color: #ff6b35;
+        }
+
+        &--medium {
+            background: rgba($color-warning, 0.15);
+            color: $color-warning;
+        }
+
+        &--low {
+            background: rgba($color-info, 0.15);
+            color: $color-info;
+        }
+    }
+
+    &__state {
+        font-size: 11px;
+        color: $color-text-muted;
+        text-transform: uppercase;
+    }
+
+    &__summary {
+        font-size: 13px;
+        color: $color-text-secondary;
+        line-height: 1.4;
+    }
+
+    &__time {
+        font-size: 11px;
+        color: $color-text-muted;
+        margin-top: 6px;
+    }
+}
+
+// ============================================================================
+// Trend Indicator
+// ============================================================================
+
+.sre-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+
+    &--improving {
+        background: rgba($color-success, 0.15);
+        color: $color-success;
+    }
+
+    &--degrading {
+        background: rgba($color-danger, 0.15);
+        color: $color-danger;
+    }
+
+    &--stable {
+        background: rgba($color-info, 0.15);
+        color: $color-info;
+    }
+}
+
+// ============================================================================
+// Responsive
+// ============================================================================
+
+@media (max-width: 768px) {
+    .sre-dashboard {
+        &__section--grid {
+            grid-template-columns: 1fr;
+        }
+
+        &__health-scores {
+            flex-direction: column;
+        }
+
+        &__slo-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .sre-canary__steps {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+}

@@ -99,6 +99,93 @@ type ApplicationSpec struct {
 
 	// SourceHydrator provides a way to push hydrated manifests back to git before syncing them to the cluster.
 	SourceHydrator *SourceHydrator `json:"sourceHydrator,omitempty" protobuf:"bytes,9,opt,name=sourceHydrator"`
+
+	// SRE defines the SRE (Site Reliability Engineering) configuration for this application.
+	// Includes deployment strategy (default: Canary), circuit breaker, rate limiting,
+	// SLO/SLI tracking, incident management, and chaos engineering.
+	SRE *SREAppConfig `json:"sre,omitempty" protobuf:"bytes,10,opt,name=sre"`
+}
+
+// SREAppConfig is an inline SRE configuration for ApplicationSpec.
+// It mirrors sre.SREConfig but is defined here for CRD compatibility.
+type SREAppConfig struct {
+	// DeploymentStrategy defines the deployment strategy. Default: Canary with progressive traffic shifting.
+	// +optional
+	DeploymentStrategy *SREDeploymentStrategy `json:"deploymentStrategy,omitempty" protobuf:"bytes,1,opt,name=deploymentStrategy"`
+	// CircuitBreaker enables circuit breaker for sync operations
+	// +optional
+	CircuitBreaker *SRECircuitBreaker `json:"circuitBreaker,omitempty" protobuf:"bytes,2,opt,name=circuitBreaker"`
+	// RateLimiting controls sync operation rate limiting
+	// +optional
+	RateLimiting *SRERateLimiting `json:"rateLimiting,omitempty" protobuf:"bytes,3,opt,name=rateLimiting"`
+	// SLOs defines Service Level Objectives for the application
+	// +optional
+	SLOs []SREServiceLevelObjective `json:"slos,omitempty" protobuf:"bytes,4,rep,name=slos"`
+	// IncidentPolicy defines incident management configuration
+	// +optional
+	IncidentPolicy *SREIncidentPolicy `json:"incidentPolicy,omitempty" protobuf:"bytes,5,opt,name=incidentPolicy"`
+}
+
+// SREDeploymentStrategy defines the deployment strategy
+type SREDeploymentStrategy struct {
+	// Type is the strategy type: Canary (default), BlueGreen, Rolling, ABTesting
+	Type string `json:"type,omitempty" protobuf:"bytes,1,opt,name=type"`
+	// CanarySteps defines progressive canary steps with traffic weights
+	CanarySteps []SRECanaryStep `json:"canarySteps,omitempty" protobuf:"bytes,2,rep,name=canarySteps"`
+	// AutoRollbackOnFailure enables automatic rollback on deployment failure
+	AutoRollbackOnFailure bool `json:"autoRollbackOnFailure,omitempty" protobuf:"varint,3,opt,name=autoRollbackOnFailure"`
+	// AutoRollbackOnSLOViolation enables rollback on SLO violations
+	AutoRollbackOnSLOViolation bool `json:"autoRollbackOnSLOViolation,omitempty" protobuf:"varint,4,opt,name=autoRollbackOnSLOViolation"`
+}
+
+// SRECanaryStep defines a single canary step
+type SRECanaryStep struct {
+	// Weight is the traffic percentage for canary (0-100)
+	Weight int32 `json:"weight" protobuf:"varint,1,opt,name=weight"`
+	// PauseDuration is how long to pause at this step (empty = manual gate)
+	PauseDuration string `json:"pauseDuration,omitempty" protobuf:"bytes,2,opt,name=pauseDuration"`
+}
+
+// SRECircuitBreaker defines circuit breaker configuration
+type SRECircuitBreaker struct {
+	// Enabled enables the circuit breaker
+	Enabled bool `json:"enabled" protobuf:"varint,1,opt,name=enabled"`
+	// FailureThreshold is failures before opening the circuit
+	FailureThreshold int32 `json:"failureThreshold,omitempty" protobuf:"varint,2,opt,name=failureThreshold"`
+	// SuccessThreshold is successes to close the circuit
+	SuccessThreshold int32 `json:"successThreshold,omitempty" protobuf:"varint,3,opt,name=successThreshold"`
+	// TimeoutSeconds is seconds the circuit stays open
+	TimeoutSeconds int32 `json:"timeoutSeconds,omitempty" protobuf:"varint,4,opt,name=timeoutSeconds"`
+}
+
+// SRERateLimiting defines rate limiting configuration
+type SRERateLimiting struct {
+	// Enabled enables rate limiting
+	Enabled bool `json:"enabled" protobuf:"varint,1,opt,name=enabled"`
+	// MaxSyncsPerHour limits syncs per hour
+	MaxSyncsPerHour int32 `json:"maxSyncsPerHour,omitempty" protobuf:"varint,2,opt,name=maxSyncsPerHour"`
+	// MaxParallelSyncs limits concurrent syncs
+	MaxParallelSyncs int32 `json:"maxParallelSyncs,omitempty" protobuf:"varint,3,opt,name=maxParallelSyncs"`
+}
+
+// SREServiceLevelObjective defines an SLO
+type SREServiceLevelObjective struct {
+	// Name is the SLO name
+	Name string `json:"name" protobuf:"bytes,1,opt,name=name"`
+	// Target is the target percentage (e.g., 99.9)
+	Target string `json:"target" protobuf:"bytes,2,opt,name=target"`
+	// Type is the SLI type (Availability, Latency, ErrorRate, Throughput)
+	Type string `json:"type" protobuf:"bytes,3,opt,name=type"`
+}
+
+// SREIncidentPolicy defines incident management
+type SREIncidentPolicy struct {
+	// Enabled enables incident management
+	Enabled bool `json:"enabled" protobuf:"varint,1,opt,name=enabled"`
+	// AutoCreate automatically creates incidents on failures
+	AutoCreate bool `json:"autoCreate,omitempty" protobuf:"varint,2,opt,name=autoCreate"`
+	// DefaultSeverity is the default incident severity (Critical, High, Medium, Low)
+	DefaultSeverity string `json:"defaultSeverity,omitempty" protobuf:"bytes,3,opt,name=defaultSeverity"`
 }
 
 type IgnoreDifferences []ResourceIgnoreDifferences
@@ -1202,6 +1289,40 @@ type ApplicationStatus struct {
 	ControllerNamespace string `json:"controllerNamespace,omitempty" protobuf:"bytes,13,opt,name=controllerNamespace"`
 	// SourceHydrator stores information about the current state of source hydration
 	SourceHydrator SourceHydratorStatus `json:"sourceHydrator,omitempty" protobuf:"bytes,14,opt,name=sourceHydrator"`
+	// SRE contains the current SRE status including deployment progress, health score, SLO compliance, and incidents
+	SRE *SREAppStatus `json:"sre,omitempty" protobuf:"bytes,15,opt,name=sre"`
+}
+
+// SREAppStatus represents the SRE status of an application
+type SREAppStatus struct {
+	// DeploymentPhase is the current deployment phase (Pending, Progressing, Paused, Completed, Failed, RollingBack)
+	DeploymentPhase string `json:"deploymentPhase,omitempty" protobuf:"bytes,1,opt,name=deploymentPhase"`
+	// CanaryWeight is the current canary traffic weight percentage
+	CanaryWeight int32 `json:"canaryWeight,omitempty" protobuf:"varint,2,opt,name=canaryWeight"`
+	// CurrentStep is the current canary step index
+	CurrentStep int32 `json:"currentStep,omitempty" protobuf:"varint,3,opt,name=currentStep"`
+	// TotalSteps is the total number of canary steps
+	TotalSteps int32 `json:"totalSteps,omitempty" protobuf:"varint,4,opt,name=totalSteps"`
+	// HealthScore is the overall application health score (0-100)
+	HealthScore int32 `json:"healthScore,omitempty" protobuf:"varint,5,opt,name=healthScore"`
+	// HealthTrend indicates health trend (Improving, Stable, Degrading)
+	HealthTrend string `json:"healthTrend,omitempty" protobuf:"bytes,6,opt,name=healthTrend"`
+	// CircuitBreakerState is the circuit breaker state (Closed, Open, HalfOpen)
+	CircuitBreakerState string `json:"circuitBreakerState,omitempty" protobuf:"bytes,7,opt,name=circuitBreakerState"`
+	// SLOCompliance indicates overall SLO compliance
+	SLOCompliance bool `json:"sloCompliance,omitempty" protobuf:"varint,8,opt,name=sloCompliance"`
+	// ErrorBudgetRemaining is the remaining error budget percentage
+	ErrorBudgetRemaining string `json:"errorBudgetRemaining,omitempty" protobuf:"bytes,9,opt,name=errorBudgetRemaining"`
+	// ActiveIncidents is the number of active incidents
+	ActiveIncidents int32 `json:"activeIncidents,omitempty" protobuf:"varint,10,opt,name=activeIncidents"`
+	// LastDeploymentMessage describes the current deployment status
+	LastDeploymentMessage string `json:"lastDeploymentMessage,omitempty" protobuf:"bytes,11,opt,name=lastDeploymentMessage"`
+	// AvailabilityScore is the availability sub-score (0-100)
+	AvailabilityScore int32 `json:"availabilityScore,omitempty" protobuf:"varint,12,opt,name=availabilityScore"`
+	// PerformanceScore is the performance sub-score (0-100)
+	PerformanceScore int32 `json:"performanceScore,omitempty" protobuf:"varint,13,opt,name=performanceScore"`
+	// ReliabilityScore is the reliability sub-score (0-100)
+	ReliabilityScore int32 `json:"reliabilityScore,omitempty" protobuf:"varint,14,opt,name=reliabilityScore"`
 }
 
 // SourceHydratorStatus contains information about the current state of source hydration

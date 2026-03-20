@@ -9,6 +9,7 @@ import applications from './applications';
 import help from './help';
 import login from './login';
 import settings from './settings';
+import {SREOverview} from './sre-overview';
 import {Layout, ThemeWrapper} from './shared/components/layout/layout';
 import {Page} from './shared/components/page/page';
 import {VersionPanel} from './shared/components/version-info/version-info-panel';
@@ -29,9 +30,12 @@ requests.setBaseHRef(base);
 
 type Routes = {[path: string]: {component: React.ComponentType<RouteComponentProps<any>>; noLayout?: boolean}};
 
+const SREOverviewPage = (_: RouteComponentProps<any>) => <SREOverview />;
+
 const routes: Routes = {
     '/login': {component: login.component as any, noLayout: true},
     '/applications': {component: applications.component},
+    '/sre': {component: SREOverviewPage},
     '/settings': {component: settings.component},
     '/user-info': {component: userInfo.component},
     '/help': {component: help.component}
@@ -50,6 +54,12 @@ const navItems: NavItem[] = [
         tooltip: 'Manage your applications, and diagnose health problems.',
         path: '/applications',
         iconClassName: 'argo-icon argo-icon-application'
+    },
+    {
+        title: 'SRE',
+        tooltip: 'SRE Command Center - Health scores, canary deployments, SLOs, incidents',
+        path: '/sre',
+        iconClassName: 'fa fa-heartbeat'
     },
     {
         title: 'Settings',

@@ -1,0 +1,124 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/example/my-app.git
+    targetRevision: HEAD
+    path: k8s
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: my-app
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  # SRE Configuration - Canary deployment is the default strategy
+  sre:
+    # Deployment Strategy: Canary (default)
+    deploymentStrategy:
+      type: Canary
+      canarySteps:
+        - weight: 10
+          pauseDuration: ""         # Manual gate - requires promotion
+        - weight: 30
+          pauseDuration: "5m"       # Auto-advance after 5 minutes
+        - weight: 50
+          pauseDuration: ""         # Manual gate
+        - weight: 80
+          pauseDuration: "10m"      # Auto-advance after 10 minutes
+        - weight: 100
+      autoRollbackOnFailure: true
+      autoRollbackOnSLOViolation: true
+
+    # Circuit Breaker: Prevents cascading failures
+    circuitBreaker:
+      enabled: true
+      failureThreshold: 5          # Open circuit after 5 consecutive failures
+      successThreshold: 3          # Close circuit after 3 consecutive successes
+      timeoutSeconds: 60           # Stay open for 60 seconds before half-open
+
+    # Rate Limiting: Controls sync frequency
+    rateLimiting:
+      enabled: true
+      maxSyncsPerHour: 10
+      maxParallelSyncs: 2
+
+    # SLOs: Service Level Objectives
+    slos:
+      - name: availability
+        target: "99.9"
+        type: Availability
+      - name: latency-p99
+        target: "95.0"
+        type: Latency
+      - name: error-rate
+        target: "99.5"
+        type: ErrorRate
+
+    # Incident Management
+    incidentPolicy:
+      enabled: true
+      autoCreate: true
+      defaultSeverity: High
+---
+# Example: Blue-Green deployment strategy
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-critical-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/example/critical-app.git
+    targetRevision: HEAD
+    path: k8s
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: critical-app
+  sre:
+    deploymentStrategy:
+      type: BlueGreen
+      autoRollbackOnFailure: true
+    circuitBreaker:
+      enabled: true
+      failureThreshold: 3
+      successThreshold: 2
+      timeoutSeconds: 120
+    slos:
+      - name: availability
+        target: "99.99"
+        type: Availability
+    incidentPolicy:
+      enabled: true
+      autoCreate: true
+      defaultSeverity: Critical
+---
+# Example: Minimal SRE config (uses all defaults - Canary deployment)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-simple-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/example/simple-app.git
+    targetRevision: HEAD
+    path: k8s
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: simple-app
+  # Empty SRE config uses all defaults:
+  # - Canary deployment with 10% → 30% → 50% → 80% → 100% steps
+  # - Circuit breaker enabled (5 failure threshold)
+  # - Rate limiting (10 syncs/hour, 2 parallel)
+  # - 99.9% availability SLO
+  # - Incident auto-creation on failure
+  sre: {}

@@ -1,0 +1,540 @@
+// SRE Overview Page Styles
+// ============================================================================
+
+$color-bg-primary: #0f1117;
+$color-bg-secondary: #1a1d29;
+$color-bg-card: #222635;
+$color-bg-hover: #2a2e3a;
+$color-text-primary: #e8eaf0;
+$color-text-secondary: #9ba0b0;
+$color-text-muted: #6b7085;
+$color-border: #2a2e3a;
+$color-success: #18be94;
+$color-warning: #f5a623;
+$color-danger: #e5344a;
+$color-info: #4fc3f7;
+
+// ============================================================================
+// Overview Layout
+// ============================================================================
+
+.sre-overview {
+    padding: 24px 32px;
+    background: $color-bg-primary;
+    min-height: 100vh;
+    color: $color-text-primary;
+
+    &__header {
+        margin-bottom: 28px;
+    }
+
+    &__title {
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0 0 6px 0;
+        background: linear-gradient(135deg, $color-info, $color-success);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    &__subtitle {
+        font-size: 14px;
+        color: $color-text-muted;
+    }
+
+    &__summary {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    &__distribution {
+        margin-bottom: 24px;
+    }
+
+    &__table-container {
+        background: $color-bg-secondary;
+        border-radius: 12px;
+        border: 1px solid $color-border;
+        overflow: hidden;
+    }
+}
+
+// ============================================================================
+// Summary Card
+// ============================================================================
+
+.sre-summary-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: $color-bg-secondary;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid $color-border;
+    transition: all 0.2s ease;
+
+    &:hover {
+        border-color: var(--accent-color, $color-border);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    &__icon {
+        font-size: 28px;
+        width: 52px;
+        height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        color: var(--accent-color, $color-info);
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__value {
+        font-size: 28px;
+        font-weight: 700;
+        color: $color-text-primary;
+        line-height: 1;
+    }
+
+    &__title {
+        font-size: 12px;
+        font-weight: 600;
+        color: $color-text-secondary;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 4px;
+    }
+
+    &__subtitle {
+        font-size: 11px;
+        color: $color-text-muted;
+        margin-top: 2px;
+    }
+}
+
+// ============================================================================
+// Distribution Bar
+// ============================================================================
+
+.sre-distribution {
+    background: $color-bg-secondary;
+    border-radius: 12px;
+    padding: 16px 20px;
+    border: 1px solid $color-border;
+
+    &__bar {
+        display: flex;
+        height: 32px;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 12px;
+    }
+
+    &__segment {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+        color: white;
+        transition: width 0.5s ease;
+
+        &--healthy {
+            background: $color-success;
+        }
+
+        &--warning {
+            background: $color-warning;
+        }
+
+        &--critical {
+            background: $color-danger;
+        }
+    }
+
+    &__legend {
+        display: flex;
+        gap: 24px;
+        justify-content: center;
+    }
+
+    &__legend-item {
+        font-size: 12px;
+        color: $color-text-secondary;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        &::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+        }
+
+        &--healthy::before {
+            background: $color-success;
+        }
+
+        &--warning::before {
+            background: $color-warning;
+        }
+
+        &--critical::before {
+            background: $color-danger;
+        }
+    }
+}
+
+// ============================================================================
+// Table
+// ============================================================================
+
+.sre-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    &__header-row {
+        background: $color-bg-card;
+    }
+
+    &__header {
+        padding: 14px 16px;
+        text-align: left;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: $color-text-muted;
+        border-bottom: 1px solid $color-border;
+
+        &--center {
+            text-align: center;
+        }
+    }
+
+    &__row {
+        border-bottom: 1px solid rgba($color-border, 0.5);
+        transition: background 0.15s ease;
+
+        &:hover {
+            background: $color-bg-hover;
+        }
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    &__cell {
+        padding: 14px 16px;
+        font-size: 13px;
+        color: $color-text-primary;
+        vertical-align: middle;
+
+        &--name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        &--center {
+            text-align: center;
+        }
+
+        &--scores {
+            display: flex;
+            gap: 6px;
+            justify-content: flex-start;
+        }
+    }
+}
+
+// ============================================================================
+// Score Badge
+// ============================================================================
+
+.sre-score-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    border-radius: 8px;
+
+    &--sm {
+        width: 36px;
+        height: 28px;
+        font-size: 13px;
+    }
+
+    &--md {
+        width: 44px;
+        height: 32px;
+        font-size: 15px;
+    }
+
+    &--lg {
+        width: 56px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    &--excellent {
+        background: rgba($color-success, 0.15);
+        color: $color-success;
+    }
+
+    &--good {
+        background: rgba($color-info, 0.15);
+        color: $color-info;
+    }
+
+    &--warning {
+        background: rgba($color-warning, 0.15);
+        color: $color-warning;
+    }
+
+    &--critical {
+        background: rgba($color-danger, 0.15);
+        color: $color-danger;
+    }
+}
+
+// ============================================================================
+// Status Dot
+// ============================================================================
+
+.sre-status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+
+    &--green {
+        background: $color-success;
+        box-shadow: 0 0 6px rgba($color-success, 0.4);
+    }
+
+    &--red {
+        background: $color-danger;
+        box-shadow: 0 0 6px rgba($color-danger, 0.4);
+    }
+
+    &--yellow {
+        background: $color-warning;
+        box-shadow: 0 0 6px rgba($color-warning, 0.4);
+    }
+
+    &--blue {
+        background: $color-info;
+        box-shadow: 0 0 6px rgba($color-info, 0.4);
+    }
+
+    &--gray {
+        background: $color-text-muted;
+    }
+}
+
+// ============================================================================
+// Trend Mini
+// ============================================================================
+
+.sre-trend-mini {
+    font-size: 14px;
+    font-weight: 700;
+
+    &--improving {
+        color: $color-success;
+    }
+
+    &--degrading {
+        color: $color-danger;
+    }
+
+    &--stable {
+        color: $color-info;
+    }
+}
+
+// ============================================================================
+// Phase Badge
+// ============================================================================
+
+.sre-phase-badge {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+
+    &--completed {
+        background: rgba($color-success, 0.12);
+        color: $color-success;
+    }
+
+    &--progressing {
+        background: rgba($color-info, 0.12);
+        color: $color-info;
+    }
+
+    &--paused {
+        background: rgba($color-warning, 0.12);
+        color: $color-warning;
+    }
+
+    &--failed, &--rollingback {
+        background: rgba($color-danger, 0.12);
+        color: $color-danger;
+    }
+
+    &--idle {
+        background: rgba($color-text-muted, 0.12);
+        color: $color-text-muted;
+    }
+}
+
+// ============================================================================
+// Mini Progress (Canary weight in table)
+// ============================================================================
+
+.sre-mini-progress {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+
+    &__fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        background: rgba($color-success, 0.2);
+        border-radius: 4px;
+    }
+
+    span {
+        font-size: 12px;
+        font-weight: 600;
+        color: $color-success;
+        position: relative;
+        z-index: 1;
+    }
+}
+
+// ============================================================================
+// SLO Badge
+// ============================================================================
+
+.sre-slo-badge {
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+
+    &--pass {
+        background: rgba($color-success, 0.12);
+        color: $color-success;
+    }
+
+    &--fail {
+        background: rgba($color-danger, 0.12);
+        color: $color-danger;
+    }
+}
+
+// ============================================================================
+// Incident Count
+// ============================================================================
+
+.sre-incident-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba($color-danger, 0.15);
+    color: $color-danger;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+// ============================================================================
+// Mini Scores
+// ============================================================================
+
+.sre-mini-score {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 22px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+
+    &--avail {
+        background: rgba($color-info, 0.1);
+        color: $color-info;
+    }
+
+    &--perf {
+        background: rgba(#ba68c8, 0.1);
+        color: #ba68c8;
+    }
+
+    &--rely {
+        background: rgba($color-success, 0.1);
+        color: $color-success;
+    }
+}
+
+// ============================================================================
+// Utilities
+// ============================================================================
+
+.sre-text-muted {
+    color: $color-text-muted;
+}
+
+.sre-text-sm {
+    font-size: 12px;
+    margin-left: 4px;
+}
+
+// ============================================================================
+// Responsive
+// ============================================================================
+
+@media (max-width: 1024px) {
+    .sre-overview__summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .sre-overview {
+        padding: 16px;
+    }
+
+    .sre-overview__summary {
+        grid-template-columns: 1fr;
+    }
+
+    .sre-table {
+        font-size: 12px;
+    }
+}

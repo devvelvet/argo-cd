@@ -1,0 +1,243 @@
+// SRE Configuration Panel Styles
+// ============================================================================
+
+$color-bg-primary: #1a1d29;
+$color-bg-secondary: #222635;
+$color-bg-card: #2a2e3a;
+$color-bg-input: #1e2130;
+$color-text-primary: #e8eaf0;
+$color-text-secondary: #9ba0b0;
+$color-text-muted: #6b7085;
+$color-border: #3a3f50;
+$color-accent: #4fc3f7;
+$color-success: #18be94;
+
+// ============================================================================
+// Config Panel
+// ============================================================================
+
+.sre-config {
+    padding: 20px;
+    color: $color-text-primary;
+
+    &__header {
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid $color-border;
+    }
+
+    &__title {
+        font-size: 20px;
+        font-weight: 600;
+        margin: 0 0 6px 0;
+    }
+
+    &__subtitle {
+        font-size: 13px;
+        color: $color-text-muted;
+    }
+}
+
+// ============================================================================
+// Config Section
+// ============================================================================
+
+.sre-config-section {
+    background: $color-bg-secondary;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 16px;
+    border: 1px solid $color-border;
+
+    &__title {
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0 0 16px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: $color-text-primary;
+    }
+}
+
+// ============================================================================
+// Config Grid
+// ============================================================================
+
+.sre-config-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+// ============================================================================
+// Config Field
+// ============================================================================
+
+.sre-config-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    &--inline {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    &__label {
+        font-size: 12px;
+        font-weight: 600;
+        color: $color-text-secondary;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    &__input {
+        background: $color-bg-input;
+        border: 1px solid $color-border;
+        border-radius: 6px;
+        padding: 8px 12px;
+        color: $color-text-primary;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s;
+
+        &:focus {
+            border-color: $color-accent;
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        &--small {
+            width: 70px;
+            text-align: center;
+        }
+
+        &--medium {
+            width: 140px;
+        }
+    }
+
+    &__select {
+        background: $color-bg-input;
+        border: 1px solid $color-border;
+        border-radius: 6px;
+        padding: 8px 12px;
+        color: $color-text-primary;
+        font-size: 14px;
+        outline: none;
+        cursor: pointer;
+        transition: border-color 0.2s;
+
+        &:focus {
+            border-color: $color-accent;
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+}
+
+// ============================================================================
+// Canary Steps
+// ============================================================================
+
+.sre-config-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sre-config-step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: $color-bg-card;
+    border-radius: 6px;
+
+    &__number {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba($color-accent, 0.15);
+        color: $color-accent;
+        border-radius: 50%;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    &__unit {
+        font-size: 13px;
+        color: $color-text-muted;
+    }
+}
+
+// ============================================================================
+// Toggle Switch
+// ============================================================================
+
+.sre-config-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+
+    &--header {
+        margin-left: auto;
+    }
+
+    input {
+        display: none;
+    }
+
+    &__slider {
+        width: 40px;
+        height: 22px;
+        background: $color-bg-card;
+        border: 1px solid $color-border;
+        border-radius: 11px;
+        position: relative;
+        transition: all 0.2s;
+
+        &::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: $color-text-muted;
+            top: 2px;
+            left: 2px;
+            transition: all 0.2s;
+        }
+    }
+
+    input:checked + &__slider {
+        background: rgba($color-success, 0.2);
+        border-color: $color-success;
+
+        &::after {
+            background: $color-success;
+            transform: translateX(18px);
+        }
+    }
+
+    input:disabled + &__slider {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    &__label {
+        font-size: 13px;
+        color: $color-text-secondary;
+    }
+}
